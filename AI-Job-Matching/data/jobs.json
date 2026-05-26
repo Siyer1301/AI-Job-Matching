@@ -1,0 +1,167 @@
+[
+  {
+    "id": 1,
+    "title": "AI Safety Research Scientist",
+    "org": "Anthropic",
+    "location": "San Francisco, CA (Remote OK)",
+    "salary": "$150,000 – $250,000",
+    "cause_areas": ["AI safety", "existential risk"],
+    "role_type": "research",
+    "skills": ["machine learning", "deep learning", "Python", "research"],
+    "description": "Work on interpretability, alignment, and evaluation research to make large language models safer and more reliable. Collaborate with a team of researchers to publish work and shape Anthropic's safety roadmap."
+  },
+  {
+    "id": 2,
+    "title": "Biosecurity Policy Analyst",
+    "org": "Johns Hopkins Center for Health Security",
+    "location": "Washington, DC (Hybrid)",
+    "salary": "$70,000 – $95,000",
+    "cause_areas": ["biosecurity", "global catastrophic risk", "policy"],
+    "role_type": "policy",
+    "skills": ["policy analysis", "writing", "biology", "research"],
+    "description": "Analyse biosecurity threats and develop policy recommendations for governments and international bodies. Publish reports, engage with policymakers, and contribute to pandemic preparedness frameworks."
+  },
+  {
+    "id": 3,
+    "title": "Operations Manager",
+    "org": "GiveWell",
+    "location": "Remote",
+    "salary": "$80,000 – $110,000",
+    "cause_areas": ["global health", "effective altruism"],
+    "role_type": "operations",
+    "skills": ["operations", "project management", "communication", "systems thinking"],
+    "description": "Keep GiveWell's research and outreach running smoothly. Own internal systems, coordinate across teams, manage vendors, and help scale the organisation as it grows."
+  },
+  {
+    "id": 4,
+    "title": "Software Engineer — AI Governance Tools",
+    "org": "Centre for AI Safety",
+    "location": "Remote",
+    "salary": "$120,000 – $160,000",
+    "cause_areas": ["AI safety", "AI governance"],
+    "role_type": "engineering",
+    "skills": ["Python", "software engineering", "backend", "APIs"],
+    "description": "Build tools and infrastructure to support AI governance research, including datasets, evaluation pipelines, and public-facing dashboards used by policymakers and researchers worldwide."
+  },
+  {
+    "id": 5,
+    "title": "Global Health Economist",
+    "org": "Open Philanthropy",
+    "location": "San Francisco, CA (Remote OK)",
+    "salary": "$100,000 – $140,000",
+    "cause_areas": ["global health", "global development"],
+    "role_type": "research",
+    "skills": ["economics", "data analysis", "research", "statistics"],
+    "description": "Conduct cost-effectiveness analysis of global health interventions to inform grant-making decisions. Work involves quantitative modelling, literature reviews, and collaborating with implementing organisations."
+  },
+  {
+    "id": 6,
+    "title": "Communications Lead",
+    "org": "Future of Life Institute",
+    "location": "Remote (Europe preferred)",
+    "salary": "$65,000 – $85,000",
+    "cause_areas": ["AI safety", "nuclear risk", "existential risk"],
+    "role_type": "communications",
+    "skills": ["writing", "communications", "social media", "storytelling"],
+    "description": "Shape FLI's public narrative on AI and existential risk. Write articles, manage media relationships, create content, and help translate complex technical ideas into compelling public communications."
+  },
+  {
+    "id": 7,
+    "title": "Community Builder — EA University Groups",
+    "org": "Centre for Effective Altruism",
+    "location": "Remote",
+    "salary": "$45,000 – $60,000",
+    "cause_areas": ["effective altruism", "movement building"],
+    "role_type": "community",
+    "skills": ["community building", "facilitation", "communication", "event planning"],
+    "description": "Support and grow EA university groups across the UK and Europe. Run retreats, provide resources, coach group organisers, and help students explore high-impact career paths."
+  },
+  {
+    "id": 8,
+    "title": "Machine Learning Engineer — Safety",
+    "org": "DeepMind",
+    "location": "London, UK",
+    "salary": "$130,000 – $200,000",
+    "cause_areas": ["AI safety"],
+    "role_type": "engineering",
+    "skills": ["machine learning", "Python", "TensorFlow", "PyTorch", "research engineering"],
+    "description": "Build and scale experiments for DeepMind's safety research team. Work at the interface of research and engineering to implement new ideas quickly and rigorously."
+  },
+  {
+    "id": 9,
+    "title": "Malaria Programme Officer",
+    "org": "Malaria Consortium",
+    "location": "Kampala, Uganda",
+    "salary": "$50,000 – $70,000",
+    "cause_areas": ["global health", "global development"],
+    "role_type": "programme management",
+    "skills": ["programme management", "public health", "data collection", "fieldwork"],
+    "description": "Manage delivery of seasonal malaria chemoprevention programmes across Sub-Saharan Africa. Coordinate with government partners, oversee data collection, and ensure high-quality programme implementation."
+  },
+  {
+    "id": 10,
+    "title": "Research Analyst — Longtermism",
+    "org": "Founders Pledge",
+    "location": "Remote",
+    "salary": "$55,000 – $75,000",
+    "cause_areas": ["existential risk", "longtermism", "effective altruism"],
+    "role_type": "research",
+    "skills": ["research", "writing", "critical thinking", "economics"],
+    "description": "Produce in-depth research reports on high-impact giving opportunities in longtermist cause areas. Advise major donors and help them direct large amounts of capital to the highest-leverage interventions."
+  },
+  {
+    "id": 11,
+    "title": "AI Policy Fellow",
+    "org": "Government AI Office (UK)",
+    "location": "London, UK",
+    "salary": "$60,000 – $80,000",
+    "cause_areas": ["AI governance", "AI safety", "policy"],
+    "role_type": "policy",
+    "skills": ["policy", "writing", "AI literacy", "stakeholder engagement"],
+    "description": "Advise UK government departments on AI regulation and governance. Brief ministers, draft policy papers, and engage with industry and civil society on responsible AI deployment."
+  },
+  {
+    "id": 12,
+    "title": "Data Scientist — Global Health",
+    "org": "IDinsight",
+    "location": "Remote (Africa or Asia preferred)",
+    "salary": "$60,000 – $90,000",
+    "cause_areas": ["global health", "global development"],
+    "role_type": "technical",
+    "skills": ["data science", "Python", "R", "statistics", "research"],
+    "description": "Use data to help NGOs and governments make better decisions about health and development programmes. Design evaluations, build dashboards, and translate findings into actionable recommendations."
+  },
+  {
+    "id": 13,
+    "title": "Fundraising Manager",
+    "org": "Against Malaria Foundation",
+    "location": "Remote",
+    "salary": "$55,000 – $75,000",
+    "cause_areas": ["global health", "effective altruism"],
+    "role_type": "fundraising",
+    "skills": ["fundraising", "donor relations", "communication", "CRM"],
+    "description": "Grow AMF's donor base by cultivating relationships with major donors, managing campaigns, and communicating impact. Work directly with the founder in a small, high-trust team."
+  },
+  {
+    "id": 14,
+    "title": "Nuclear Security Researcher",
+    "org": "Nuclear Threat Initiative",
+    "location": "Washington, DC",
+    "salary": "$75,000 – $105,000",
+    "cause_areas": ["nuclear risk", "global catastrophic risk"],
+    "role_type": "research",
+    "skills": ["research", "policy", "writing", "international relations"],
+    "description": "Research nuclear security risks and develop recommendations to reduce the likelihood of nuclear weapons use. Engage with governments, international organisations, and arms control experts."
+  },
+  {
+    "id": 15,
+    "title": "Head of Talent",
+    "org": "80,000 Hours",
+    "location": "Remote",
+    "salary": "$80,000 – $110,000",
+    "cause_areas": ["effective altruism", "movement building"],
+    "role_type": "talent",
+    "skills": ["recruiting", "career coaching", "operations", "communication"],
+    "description": "Help high-potential individuals find high-impact careers. Run hiring processes for EA organisations, build talent pipelines, and directly advise people navigating career decisions in the EA ecosystem."
+  }
+]
