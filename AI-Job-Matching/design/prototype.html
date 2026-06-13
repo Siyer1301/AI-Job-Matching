@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EA Job Matching — prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF5FB;
+    --ink:#13293D;
+    --navy:#1C6FB5;
+    --gold:#E8852B;
+    --moss:#2E86C1;
+    --line:#CBE0EF;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Sans 3', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    letter-spacing:-0.01em;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  /* ---------- layout shell ---------- */
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px;}
+  header.site{
+    border-bottom:1px solid var(--line);
+    padding:22px 0;
+  }
+  header.site .wrap{display:flex;align-items:center;justify-content:space-between;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand-mark{width:30px;height:30px;flex-shrink:0;}
+  .brand-name{font-family:'Fraunces',serif;font-weight:600;font-size:1.25rem;}
+  .brand-name .sub{display:block;font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:#5d7d96;font-weight:400;margin-top:2px;}
+  nav.tabs{display:flex;gap:6px;background:#DCEBF6;border-radius:100px;padding:4px;}
+  nav.tabs button{
+    border:none;background:transparent;padding:9px 16px;border-radius:100px;
+    font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:0.9rem;
+    color:#4a6d88;cursor:pointer;transition:all .25s ease;white-space:nowrap;
+  }
+  nav.tabs button.active{background:var(--navy);color:var(--paper);}
+
+  /* ---------- hero ---------- */
+  .hero{padding:64px 0 40px;}
+  .hero .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--moss);margin-bottom:14px;display:block;
+  }
+  .hero h1{font-size:3rem;line-height:1.08;margin:0 0 18px;max-width:11ch;font-weight:600;}
+  .hero p.lead{font-size:1.12rem;line-height:1.6;max-width:48ch;color:#3a5469;margin:0 0 30px;}
+
+  /* ---------- form ---------- */
+  .panel{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:36px;margin-bottom:60px;
+  }
+  .panel h2{margin:0 0 6px;font-size:1.5rem;font-weight:600;}
+  .panel .panel-sub{color:#5d7d96;font-size:0.92rem;margin:0 0 28px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.02em;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  .field{margin-bottom:22px;}
+  .field label{display:block;font-weight:600;font-size:0.92rem;margin-bottom:8px;}
+  .field .hint{font-size:0.82rem;color:#7593a8;margin-top:6px;}
+  input[type=text], input[type=email], select, textarea{
+    width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;
+    background:#F7FBFE;font-family:'Source Sans 3',sans-serif;font-size:0.98rem;color:var(--ink);
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  textarea{resize:vertical;min-height:96px;}
+  input:focus, select:focus, textarea:focus{
+    outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(33,56,74,0.12);
+  }
+  .chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    border:1px solid var(--line);background:#F7FBFE;padding:8px 16px;border-radius:100px;
+    font-size:0.88rem;font-weight:600;cursor:pointer;transition:all .18s ease;color:#3a5a73;
+  }
+  .chip:hover{border-color:var(--moss);}
+  .chip.selected{background:var(--moss);border-color:var(--moss);color:#fff;}
+  /* ranked role-type + cause chips */
+  #role-type .chip, #causes .chip{display:inline-flex;align-items:center;gap:8px;}
+  #role-type .chip.selected{background:var(--gold);border-color:var(--gold);}
+  .rank-badge{
+    display:none;align-items:center;justify-content:center;
+    min-width:20px;height:20px;padding:0 5px;border-radius:100px;
+    background:rgba(255,255,255,0.28);color:#fff;
+    font-family:'IBM Plex Mono',monospace;font-size:0.72rem;font-weight:600;
+  }
+  #role-type .chip.selected .rank-badge,
+  #causes .chip.selected .rank-badge{display:inline-flex;}
+  .slider-row{display:flex;align-items:center;gap:16px;}
+  .slider-row input[type=range]{flex:1;accent-color:var(--gold);}
+  .slider-val{font-family:'IBM Plex Mono',monospace;font-size:0.9rem;width:44px;text-align:right;color:var(--navy);font-weight:600;}
+
+  .btn-primary{
+    background:var(--gold);color:#fff;border:none;padding:15px 32px;border-radius:10px;
+    font-family:'Fraunces',serif;font-weight:600;font-size:1.05rem;cursor:pointer;
+    transition:transform .15s ease, background .2s ease;
+  }
+  .btn-primary:hover{background:#cf741f;}
+  .btn-primary:active{transform:scale(0.98);}
+
+  /* ---------- results ---------- */
+  .results-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px;}
+  .results-head h2{font-size:1.7rem;margin:0;font-weight:600;}
+  .results-count{font-family:'IBM Plex Mono',monospace;color:#5d7d96;font-size:0.88rem;}
+
+  .job-card{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:28px;margin-bottom:20px;display:flex;gap:28px;align-items:flex-start;
+  }
+  @media (max-width:760px){.job-card{flex-direction:column;}}
+
+  /* signature element: compass dial */
+  .dial{flex-shrink:0;width:104px;height:104px;position:relative;}
+  .dial svg{transform:rotate(-90deg);}
+  .dial .track{fill:none;stroke:#DCEBF6;stroke-width:8;}
+  .dial .fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s ease;}
+  .dial .score{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .dial .score .num{font-family:'Fraunces',serif;font-weight:700;font-size:1.7rem;line-height:1;}
+  .dial .score .lbl{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;color:#7593a8;margin-top:2px;}
+
+  .job-body{flex:1;min-width:0;}
+  .job-body .org{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--moss);margin-bottom:6px;}
+  .job-body h3{font-size:1.32rem;margin:0 0 8px;font-weight:600;}
+  .job-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:0.85rem;color:#5d7d96;margin-bottom:14px;font-family:'IBM Plex Mono',monospace;}
+  .job-meta span{display:flex;align-items:center;gap:6px;}
+  .why-fits{
+    background:#EAF4FB;border-left:3px solid var(--gold);border-radius:0 10px 10px 0;
+    padding:14px 18px;font-size:0.95rem;line-height:1.6;color:#3a5469;margin-bottom:14px;
+  }
+  .why-fits b{color:var(--ink);}
+  .tag-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .tag{
+    font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px;
+    background:#DCEBF6;color:var(--moss);font-family:'Source Sans 3',sans-serif;
+  }
+  .job-actions{display:flex;gap:10px;margin-top:16px;}
+  .btn-ghost{
+    border:1px solid var(--line);background:transparent;padding:9px 18px;border-radius:8px;
+    font-weight:600;font-size:0.88rem;cursor:pointer;color:var(--ink);font-family:'Source Sans 3',sans-serif;
+    transition:border-color .2s ease;
+  }
+  .btn-ghost:hover{border-color:var(--navy);}
+
+  /* ---------- advisor view ---------- */
+  .upload-box{
+    border:2px dashed var(--line);border-radius:14px;padding:48px 24px;text-align:center;
+    color:#5d7d96;background:#F7FBFE;margin-bottom:30px;
+  }
+  .upload-box .icon{font-size:2.2rem;display:block;margin-bottom:12px;}
+  .upload-box strong{color:var(--ink);}
+  table.advisor{width:100%;border-collapse:collapse;font-size:0.92rem;}
+  table.advisor th{
+    text-align:left;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.12em;
+    text-transform:uppercase;color:#7593a8;padding:10px 14px;border-bottom:1px solid var(--line);
+  }
+  table.advisor td{padding:14px 14px;border-bottom:1px solid var(--line);}
+  table.advisor tr:hover td{background:#F7FBFE;}
+  .score-pill{
+    font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:0.85rem;
+    padding:4px 10px;border-radius:6px;display:inline-block;
+  }
+  .score-high{background:#DCEBF6;color:var(--moss);}
+  .score-mid{background:#FCEBD9;color:#C56A18;}
+
+  /* footer note */
+  .proto-note{
+    max-width:1040px;margin:0 auto;padding:30px 28px 70px;color:#7593a8;font-size:0.85rem;
+    border-top:1px solid var(--line);margin-top:40px;font-family:'IBM Plex Mono',monospace;line-height:1.7;
+  }
+
+  .view{display:none;}
+  .view.active{display:block;}
+
+  @media (max-width:760px){
+    .grid2{grid-template-columns:1fr;}
+    .hero h1{font-size:2.2rem;}
+    nav.tabs{font-size:0.85rem;}
+    nav.tabs button{padding:8px 12px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="15" cy="15" r="13" stroke="#1C6FB5" stroke-width="2"/>
+        <path d="M15 5 L18 14 L27 15 L18 16 L15 25 L12 16 L3 15 L12 14 Z" fill="#E8852B"/>
+      </svg>
+      <div class="brand-name">EA Job Matching<span class="sub">Prototype</span></div>
+    </div>
+    <nav class="tabs">
+      <button class="active" data-view="seeker">Find an opportunity</button>
+      <button data-view="advisor">Find your members an opportunity</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= SEEKER VIEW ================= -->
+<div class="view active" id="view-seeker">
+  <div class="wrap">
+    <section class="hero">
+      <span class="eyebrow">Find your next role</span>
+      <h1>Find your next high impact role</h1>
+      <p class="lead">Tell us about your background, skills, and the causes you care about. We'll rank open roles across the EA job market and explain why each one fits.</p>
+    </section>
+
+    <!-- Profile form -->
+    <div class="panel" id="profile-panel">
+      <h2>Your profile</h2>
+      <p class="panel-sub">~2 MINUTES · NOTHING IS SAVED IN THIS PROTOTYPE</p>
+
+      <div class="grid2">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" placeholder="Jordan Smith">
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="jordan@example.com">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Cause areas you care about</label>
+        <div class="chip-row" id="causes">
+          <div class="chip selected">AI Safety</div>
+          <div class="chip">AI Governance &amp; Policy</div>
+          <div class="chip">Global Health &amp; Development</div>
+          <div class="chip selected">Animal Welfare</div>
+          <div class="chip">Factory Farming</div>
+          <div class="chip">Wild Animal Welfare</div>
+          <div class="chip">Biosecurity &amp; Pandemic Preparedness</div>
+          <div class="chip">Nuclear Security</div>
+          <div class="chip">Climate Change</div>
+          <div class="chip">Global Priorities Research</div>
+          <div class="chip">EA Meta / Movement Building</div>
+          <div class="chip">Community Building</div>
+          <div class="chip">Mental Health &amp; Wellbeing</div>
+          <div class="chip">Global Catastrophic Risks</div>
+          <div class="chip">Existential Risk</div>
+          <div class="chip">Forecasting &amp; Epistemics</div>
+          <div class="chip">Economic Growth &amp; Development</div>
+          <div class="chip">Global Poverty</div>
+          <div class="chip">Science &amp; Technology Policy</div>
+          <div class="chip">Digital Sentience</div>
+          <div class="chip">Space Governance</div>
+          <div class="chip">Institutional Decision-Making</div>
+        </div>
+        <div class="hint">Tap in order of preference — your top cause is ranked #1. This drives most of the matching.</div>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label>Role type</label>
+          <div class="chip-row" id="role-type">
+            <div class="chip">Research</div>
+            <div class="chip">Operations</div>
+            <div class="chip">Software / Engineering</div>
+            <div class="chip">Communications</div>
+            <div class="chip">Policy</div>
+            <div class="chip">Grantmaking / Programme management</div>
+            <div class="chip">Data Science / Analysis</div>
+            <div class="chip">People / HR</div>
+            <div class="chip">Finance</div>
+            <div class="chip">Events</div>
+          </div>
+          <div class="hint">Tap in order of preference — your top pick is ranked #1.</div>
+        </div>
+        <div class="field">
+          <label for="location">Location preference</label>
+          <select id="location">
+            <option>Remote</option>
+            <option>UK</option>
+            <option>US</option>
+            <option>EU</option>
+            <option>No preference</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Years of experience</label>
+        <div class="slider-row">
+          <input type="range" id="experience" min="0" max="15" value="3">
+          <div class="slider-val" id="experience-val">3 yrs</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Type of commitment</label>
+        <div class="chip-row" id="commitment">
+          <div class="chip selected">Full-time</div>
+          <div class="chip">Part-time</div>
+          <div class="chip">Internship</div>
+          <div class="chip">Volunteering</div>
+          <div class="chip">Contract / freelance</div>
+        </div>
+        <div class="hint">Tap any that you're open to.</div>
+      </div>
+
+      <div class="field">
+        <label for="goals">What you want to work on</label>
+        <textarea id="goals" placeholder="e.g. I want to move into AI governance and eventually shape how frontier labs are regulated. Ideally something research-heavy where I can build domain expertise over the next few years.">I want to move into AI governance and eventually shape how frontier labs are regulated — ideally something research-heavy where I can build domain expertise.</textarea>
+        <div class="hint">Your goals and direction, not just your past — this helps us match on trajectory.</div>
+      </div>
+
+      <div class="field">
+        <label for="background">Background &amp; skills</label>
+        <textarea id="background" placeholder="e.g. Economics MSc from Oxford, 2 years in management consulting, strong Python and data analysis, interested in transitioning to AI governance research...">Economics MSc from Oxford, 2 years in management consulting, strong Python and data analysis, interested in transitioning to AI governance research.</textarea>
+        <div class="hint">The more specific, the better the "why this fits" explanations will be.</div>
+      </div>
+
+      <div class="field">
+        <label for="notes">Other notes</label>
+        <textarea id="notes" placeholder="Anything else we should factor in — visa or right-to-work constraints, salary needs, start date, accessibility requirements, organisations to avoid, etc."></textarea>
+        <div class="hint">Optional. Constraints and preferences that don't fit the boxes above.</div>
+      </div>
+
+      <button class="btn-primary" id="find-matches">Find my matches →</button>
+    </div>
+
+    <!-- Results -->
+    <div id="results" style="display:none;">
+      <div class="results-head">
+        <h2>Your top matches</h2>
+        <div class="results-count">3 of 15 roles shown · sorted by fit</div>
+      </div>
+
+      <div class="job-card">
+        <div class="dial">
+          <svg width="104" height="104" viewBox="0 0 104 104">
+            <circle class="track" cx="52" cy="52" r="46"></circle>
+            <circle class="fill" cx="52" cy="52" r="46" stroke="#1C6FB5"
+              stroke-dasharray="289" stroke-dashoffset="29"></circle>
+          </svg>
+          <div class="score"><div class="num">92</div><div class="lbl">FIT SCORE</div></div>
+        </div>
+        <div class="job-body">
+          <div class="org">Centre for AI Safety · London / Remote</div>
+          <h3>AI Governance Researcher</h3>
+          <div class="job-meta">
+            <span>💰 £48k–£62k</span>
+            <span>🌍 Remote-friendly</span>
+            <span>🕒 Full-time</span>
+          </div>
+          <div class="why-fits">
+            <b>Why this fits:</b> Your Oxford economics background and interest in AI governance line up closely with this role's focus on policy analysis for frontier AI labs. Your consulting experience in structuring ambiguous problems is exactly the kind of generalist skill this team is short on.
+          </div>
+          <div class="tag-row">
+            <div class="tag">AI Safety</div>
+            <div class="tag">Research</div>
+            <div class="tag">Remote</div>
+          </div>
+          <div class="job-actions">
+            <button class="btn-ghost">View full listing</button>
+            <button class="btn-ghost">Save for later</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="job-card">
+        <div class="dial">
+          <svg width="104" height="104" viewBox="0 0 104 104">
+            <circle class="track" cx="52" cy="52" r="46"></circle>
+            <circle class="fill" cx="52" cy="52" r="46" stroke="#E8852B"
+              stroke-dasharray="289" stroke-dashoffset="58"></circle>
+          </svg>
+          <div class="score"><div class="num">85</div><div class="lbl">FIT SCORE</div></div>
+        </div>
+        <div class="job-body">
+          <div class="org">Open Philanthropy · Remote (US/UK)</div>
+          <h3>Programme Associate, Animal Welfare</h3>
+          <div class="job-meta">
+            <span>💰 £52k–£70k</span>
+            <span>🌍 Remote</span>
+            <span>🕒 Full-time</span>
+          </div>
+          <div class="why-fits">
+            <b>Why this fits:</b> Your selection of animal welfare as a cause area, combined with quantitative analysis skills from your consulting role, maps well onto this grant-evaluation position. Some upskilling in farm animal welfare science would strengthen your application.
+          </div>
+          <div class="tag-row">
+            <div class="tag">Animal Welfare</div>
+            <div class="tag">Grantmaking</div>
+            <div class="tag">Remote</div>
+          </div>
+          <div class="job-actions">
+            <button class="btn-ghost">View full listing</button>
+            <button class="btn-ghost">Save for later</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="job-card">
+        <div class="dial">
+          <svg width="104" height="104" viewBox="0 0 104 104">
+            <circle class="track" cx="52" cy="52" r="46"></circle>
+            <circle class="fill" cx="52" cy="52" r="46" stroke="#E8852B"
+              stroke-dasharray="289" stroke-dashoffset="92"></circle>
+          </svg>
+          <div class="score"><div class="num">71</div><div class="lbl">FIT SCORE</div></div>
+        </div>
+        <div class="job-body">
+          <div class="org">80,000 Hours · Oxford / Remote</div>
+          <h3>Operations &amp; Research Generalist</h3>
+          <div class="job-meta">
+            <span>💰 £40k–£55k</span>
+            <span>🌍 Hybrid (Oxford)</span>
+            <span>🕒 Full-time</span>
+          </div>
+          <div class="why-fits">
+            <b>Why this fits:</b> A broad generalist role that suits your operations-curious profile, though it's a step away from your stated preference for research-heavy work — worth considering if you're open to a varied portfolio role early in an EA career pivot.
+          </div>
+          <div class="tag-row">
+            <div class="tag">EA Meta</div>
+            <div class="tag">Operations</div>
+            <div class="tag">Hybrid</div>
+          </div>
+          <div class="job-actions">
+            <button class="btn-ghost">View full listing</button>
+            <button class="btn-ghost">Save for later</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ================= ADVISOR VIEW ================= -->
+<div class="view" id="view-advisor">
+  <div class="wrap">
+    <section class="hero">
+      <span class="eyebrow">For university &amp; community group organisers</span>
+      <h1>Help your members find their next role</h1>
+      <p class="lead">Upload a list of the members you support. We'll run every profile against the live job board and return a ranked shortlist for each person — ready to share before your next round of one-to-ones.</p>
+    </section>
+
+    <div class="panel">
+      <h2>Upload your member list</h2>
+      <p class="panel-sub">CSV WITH COLUMNS: NAME, CAUSE AREAS, SKILLS, EXPERIENCE, LOCATION, OTHER NOTES</p>
+      <div class="upload-box">
+        <span class="icon">📄</span>
+        <strong>Drag your member list here</strong>, or click to browse.<br>
+        <span style="font-size:0.85rem;">members_export.csv · 247 rows (demo)</span>
+      </div>
+      <button class="btn-primary" id="run-batch">Run matching →</button>
+    </div>
+
+    <div id="advisor-results" style="display:none;">
+      <div class="results-head">
+        <h2>Top match per member</h2>
+        <div class="results-count">247 members · 15 active roles</div>
+      </div>
+      <table class="advisor">
+        <thead>
+          <tr><th>Member</th><th>Top cause area</th><th>Best-matched role</th><th>Fit</th><th>Other notes</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A. Whitfield</td>
+            <td>AI Safety</td>
+            <td>AI Governance Researcher — Centre for AI Safety</td>
+            <td><span class="score-pill score-high">92</span></td>
+            <td>Available from September</td>
+            <td><button class="btn-ghost">Details</button></td>
+          </tr>
+          <tr>
+            <td>R. Okafor</td>
+            <td>Global Health</td>
+            <td>Programme Officer — GiveWell</td>
+            <td><span class="score-pill score-high">88</span></td>
+            <td>Needs visa sponsorship</td>
+            <td><button class="btn-ghost">Details</button></td>
+          </tr>
+          <tr>
+            <td>M. Lindqvist</td>
+            <td>Biosecurity</td>
+            <td>Policy Analyst — Johns Hopkins CHS</td>
+            <td><span class="score-pill score-mid">76</span></td>
+            <td>Part-time only</td>
+            <td><button class="btn-ghost">Details</button></td>
+          </tr>
+          <tr>
+            <td>S. Patel</td>
+            <td>Animal Welfare</td>
+            <td>Programme Associate — Open Philanthropy</td>
+            <td><span class="score-pill score-high">85</span></td>
+            <td>—</td>
+            <td><button class="btn-ghost">Details</button></td>
+          </tr>
+          <tr>
+            <td>D. Kowalski</td>
+            <td>EA Meta</td>
+            <td>Operations Generalist — 80,000 Hours</td>
+            <td><span class="score-pill score-mid">71</span></td>
+            <td>Open to relocating</td>
+            <td><button class="btn-ghost">Details</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="proto-note">
+  PROTOTYPE NOTES — this is a static mockup for feedback, not a working app.<br>
+  Things to react to: (1) the fit-score dial as the core visual unit, (2) tone &amp; depth of the "why this fits" copy,
+  (3) cause-area chips vs. a different taxonomy, (4) whether organisers need a per-member detail view or just the table,
+  (5) anything missing entirely. Once we agree on these, we'll wire up the real matching backend.
+</div>
+
+<script>
+  // tab switching
+  document.querySelectorAll('nav.tabs button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      document.getElementById('view-'+btn.dataset.view).classList.add('active');
+    });
+  });
+
+  // commitment chips stay a simple on/off toggle
+  document.querySelectorAll('#commitment .chip').forEach(chip=>{
+    chip.addEventListener('click',()=>chip.classList.toggle('selected'));
+  });
+
+  // reusable ranked multi-select: tap order sets preference rank
+  function makeRankable(containerId){
+    const chips = document.querySelectorAll('#'+containerId+' .chip');
+    const order = [];
+
+    function renumber(){
+      order.forEach((chip,i)=>{
+        let badge = chip.querySelector('.rank-badge');
+        if(!badge){
+          badge = document.createElement('span');
+          badge.className = 'rank-badge';
+          chip.insertBefore(badge, chip.firstChild);
+        }
+        badge.textContent = i + 1;
+      });
+    }
+
+    chips.forEach(chip=>{
+      // pre-register any chips marked selected in the HTML
+      if(chip.classList.contains('selected')) order.push(chip);
+      chip.addEventListener('click',()=>{
+        const idx = order.indexOf(chip);
+        if(idx === -1){
+          chip.classList.add('selected');
+          order.push(chip);
+        } else {
+          chip.classList.remove('selected');
+          const badge = chip.querySelector('.rank-badge');
+          if(badge) badge.remove();
+          order.splice(idx,1);
+        }
+        renumber();
+      });
+    });
+
+    renumber(); // number any pre-selected chips on load
+  }
+
+  makeRankable('causes');
+  makeRankable('role-type');
+
+  // experience slider
+  const exp = document.getElementById('experience');
+  const expVal = document.getElementById('experience-val');
+  exp.addEventListener('input',()=>expVal.textContent = exp.value + ' yrs');
+
+  // find matches
+  document.getElementById('find-matches').addEventListener('click',()=>{
+    document.getElementById('results').style.display='block';
+    document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  // advisor batch run
+  document.getElementById('run-batch').addEventListener('click',()=>{
+    document.getElementById('advisor-results').style.display='block';
+    document.getElementById('advisor-results').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+</script>
+</body>
+</html>
